@@ -4,8 +4,6 @@ on:
   push:
     branches:
       - main  # Trigger the workflow on push to the main branch
-env:
-  ARGOCD_REPOSITORY: 'argocd_repo'
 
 jobs:
   build:
@@ -60,19 +58,19 @@ jobs:
       - name: Read data
         run: cat ${{ github.workspace }}/kubernetes.yml
         
-      - name: Checkout target repository --> ${{env.ARGOCD_REPOSITORY}}
+      - name: Checkout target repository i.e argocd_repo
         uses: actions/checkout@v4
         with:
-          repository: Nikhil12894/${{env.ARGOCD_REPOSITORY}}  # Replace with the owner and name of the target repo
-          path: ./${{env.ARGOCD_REPOSITORY}}
+          repository: Nikhil12894/argocd_repo  # Replace with the owner and name of the target repo
+          path: ./argocd_repo
           ref: main
           token: ${{ secrets.PAT_TOKEN }}  # Use the personal access token for authentication
 
       - name: Copy artifacts to target repository
         run: |
-          mkdir -p ${{ github.workspace }}/${{env.ARGOCD_REPOSITORY}}/${{ github.event.repository.name }}
-          ls ${{ github.workspace }}/${{env.ARGOCD_REPOSITORY}}
-          cp -f ${{ github.workspace }}/*.yml ./${{env.ARGOCD_REPOSITORY}}/${{ github.event.repository.name }}/${{ github.event.repository.name }}.yaml  # Adjust the path as needed
+          mkdir -p ${{ github.workspace }}/argocd_repo/${{ github.event.repository.name }}
+          ls ${{ github.workspace }}/argocd_repo
+          cp -f ${{ github.workspace }}/*.yml ./argocd_repo/${{ github.event.repository.name }}/${{ github.event.repository.name }}.yaml  # Adjust the path as needed
 
       - name: Configure Git
         run: |
@@ -81,9 +79,9 @@ jobs:
 
       - name: Commit and push changes
         run: |
-          cd ${{env.ARGOCD_REPOSITORY}}
+          cd argocd_repo
           git add .
-          git commit -m "Add/updated generated YAML file ${{ github.event.repository.name }} with run ${{github.run_number}}"
+          git commit -m "Add/updated generated YAML file ${{ github.event.repository.name }} with run ${{github.run_number}} ${{github.run_id}}"
           git push
         env:
           GITHUB_TOKEN: ${{ secrets.PAT_TOKEN }}
