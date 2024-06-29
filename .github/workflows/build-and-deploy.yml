@@ -44,7 +44,7 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           name: build-artifact
-          path: ${{ github.workspace }}/${{ github.event.repository.name }}/dekorate_k8s_output/*.yml  # Adjust the path to your generated YAML file
+          path: ${{ github.workspace }}/dekorate_k8s_output/*.yml  # Adjust the path to your generated YAML file
 
   deploy:
     runs-on: ubuntu-latest
